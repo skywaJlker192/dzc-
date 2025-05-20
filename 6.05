@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Group { get; set; }
+    public int[] Grades { get; set; }
+
+    public Student(string firstName, string lastName, string group, int[] grades)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Group = group;
+        Grades = grades;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 1. Заполнение списка студентов тестовыми данными
+        List<Student> students = new List<Student>
+        {
+            new Student("Иван", "Иванов", "Группа1", new int[] {5, 4, 5, 5, 4}),
+            new Student("Петр", "Петров", "Группа1", new int[] {3, 4, 3, 4, 3}),
+            new Student("Сергей", "Сидоров", "Группа2", new int[] {5, 5, 5, 5, 5}),
+            new Student("Анна", "Кузнецова", "Группа2", new int[] {4, 4, 4, 5, 4}),
+            new Student("Мария", "Смирнова", "Группа3", new int[] {3, 3, 4, 3, 4}),
+            new Student("Алексей", "Попов", "Группа3", new int[] {5, 4, 5, 4, 5}),
+            new Student("Елена", "Васильева", "Группа4", new int[] {4, 5, 4, 5, 4}),
+            new Student("Дмитрий", "Новиков", "Группа4", new int[] {3, 3, 3, 3, 3}),
+            new Student("Ольга", "Морозова", "Группа5", new int[] {5, 5, 4, 5, 5}),
+            new Student("Николай", "Волков", "Группа5", new int[] {4, 4, 4, 4, 4}),
+            new Student("Александр", "Лебедев", "Группа6", new int[] {3, 4, 5, 3, 4}),
+            new Student("Татьяна", "Семенова", "Группа6", new int[] {5, 5, 4, 5, 4}),
+            new Student("Андрей", "Павлов", "Группа7", new int[] {4, 3, 4, 3, 4}),
+            new Student("Екатерина", "Голубева", "Группа7", new int[] {5, 4, 5, 5, 5}),
+            new Student("Михаил", "Виноградов", "Группа8", new int[] {3, 5, 3, 5, 3})
+        };
+
+        while (true)
+        {
+            Console.WriteLine("\nМеню анализа данных студентов:");
+            Console.WriteLine("1. Студенты со средним баллом > 4");
+            Console.WriteLine("2. Сортировка студентов по ФИ");
+            Console.WriteLine("3. Студенты с хотя бы одной 5");
+            Console.WriteLine("4. Группы и их средний балл");
+            Console.WriteLine("5. Успешные студенты из группы");
+            Console.WriteLine("0. Выход");
+            Console.Write("Выберите действие: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int choice))
+            {
+                Console.WriteLine("Некорректный ввод!");
+                continue;
+            }
+
+            switch (choice)
+            {
+                case 1:
+                    // Студенты со средним баллом > 4
+                    var highAchievers = students.Where(s => s.Grades.Average() > 4);
+                    Console.WriteLine("\nСтуденты со средним баллом > 4:");
+                    foreach (var student in highAchievers)
+                    {
+                        Console.WriteLine($"{student.LastName} {student.FirstName} - {student.Grades.Average():F2}");
+                    }
+                    break;
+
+                case 2:
+                    // Сортировка по фамилии и имени
+                    var sortedStudents = students.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+                    Console.WriteLine("\nСтуденты, отсортированные по ФИ:");
+                    foreach (var student in sortedStudents)
+                    {
+                        Console.WriteLine($"{student.LastName} {student.FirstName}");
+                    }
+                    break;
+
+                case 3:
+                    // Студенты с хотя бы одной 5
+                    var studentsWith5 = students.Where(s => s.Grades.Contains(5))
+                                               .Select(s => s.FirstName);
+                    Console.WriteLine("\nИмена студентов с хотя бы одной 5:");
+                    foreach (var name in studentsWith5)
+                    {
+                        Console.WriteLine(name);
+                    }
+                    break;
+
+                case 4:
+                    // Группировка по группам с средним баллом
+                    var groupStats = students.GroupBy(s => s.Group)
+                                           .Select(g => new {
+                                               Group = g.Key,
+                                               AvgGrade = g.Average(s => s.Grades.Average())
+                                           });
+                    Console.WriteLine("\nСредний балл по группам:");
+                    foreach (var group in groupStats)
+                    {
+                        Console.WriteLine($"{group.Group}: {group.AvgGrade:F2}");
+                    }
+                    break;
+
+                case 5:
+                    // Успешные студенты из конкретной группы
+                    Console.Write("Введите название группы: ");
+                    string groupName = Console.ReadLine();
+
+                    var groupHighAchievers = students.Where(s => s.Group == groupName && s.Grades.Average() > 4)
+                                                   .OrderBy(s => s.FirstName)
+                                                   .Select(s => s.LastName);
+                    Console.WriteLine($"\nУспешные студенты группы {groupName}:");
+                    foreach (var lastName in groupHighAchievers)
+                    {
+                        Console.WriteLine(lastName);
+                    }
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    Console.WriteLine("Неизвестная команда!");
+                    break;
+            }
+        }
+    }
+}
