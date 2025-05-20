@@ -1,0 +1,75 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("\nАнализатор погоды");
+            Console.WriteLine("1. Определить тип осадков");
+            Console.WriteLine("2. Определить комфортность температуры");
+            Console.WriteLine("3. Выход");
+            Console.Write("Выберите действие: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int choice))
+            {
+                Console.WriteLine("Некорректный ввод! Пожалуйста, введите число от 1 до 3.");
+                continue;
+            }
+
+            switch (choice)
+            {
+                case 1:
+                    DeterminePrecipitationType();
+                    break;
+                case 2:
+                    DetermineTemperatureComfort();
+                    break;
+                case 3:
+                    Console.WriteLine("Программа завершена.");
+                    return;
+                default:
+                    Console.WriteLine("Неизвестная команда! Пожалуйста, выберите 1, 2 или 3.");
+                    break;
+            }
+        }
+    }
+
+    static void DeterminePrecipitationType()
+    {
+        Console.Write("Введите уровень осадков в мм: ");
+        if (double.TryParse(Console.ReadLine(), out double precipitation))
+        {
+            string result = precipitation switch
+            {
+                < 0.1 => "Без осадков",
+                >= 0.1 and <= 2.5 => "Небольшой дождь",
+                > 2.5 and <= 17 => "Умеренный дождь",
+                > 17 => "Сильный дождь",
+                _ => "Некорректное значение"
+            };
+            Console.WriteLine($"Тип осадков: {result}");
+        }
+        else
+        {
+            Console.WriteLine("Некорректный ввод! Пожалуйста, введите число.");
+        }
+    }
+
+    static void DetermineTemperatureComfort()
+    {
+        Console.Write("Введите температуру воздуха в °C: ");
+        if (double.TryParse(Console.ReadLine(), out double temperature))
+        {
+            string comfort = temperature > 25 ? "Жарко" :
+                            temperature < 10 ? "Холодно" :
+                            "Комфортно";
+            Console.WriteLine($"Ощущается: {comfort}");
+        }
+        else
+        {
+            Console.WriteLine("Некорректный ввод! Пожалуйста, введите число.");
+        }
+    }
+}
