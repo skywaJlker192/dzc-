@@ -1,0 +1,90 @@
+Управление книгами в стопке
+csharp
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Stack<string> books = new Stack<string>();
+
+        books.Push("Мастер и Маргарита");
+        books.Push("1984");
+        books.Push("Маленький принц");
+
+        Console.WriteLine("Текущая стопка книг:");
+        foreach (var book in books)
+            Console.WriteLine("- " + book);
+
+        string removedBook = books.Pop();
+        Console.WriteLine($"\nУбрали книгу: {removedBook}");
+
+        string topBook = books.Peek();
+        Console.WriteLine($"\nКнига сверху: {topBook}");
+
+        Console.WriteLine("\nОбновленная стопка:");
+        foreach (var book in books)
+            Console.WriteLine("- " + book);
+    }
+}
+
+Управление инвентарем в игре
+csharp
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Dictionary<string, int> inventory = new Dictionary<string, int>()
+        {
+            {"Меч", 1},
+            {"Щит", 2},
+            {"Зелье здоровья", 5}
+        };
+
+        Console.WriteLine("Начальный инвентарь:");
+        PrintInventory(inventory);
+
+        AddItem(inventory, "Зелье маны", 3);
+        RemoveItem(inventory, "Щит");
+
+        Console.WriteLine("\nТекущий инвентарь:");
+        PrintInventory(inventory);
+
+        SearchItem(inventory, "Меч");
+    }
+
+    static void AddItem(Dictionary<string, int> inv, string item, int count)
+    {
+        if (inv.ContainsKey(item))
+            inv[item] += count;
+        else
+            inv.Add(item, count);
+    }
+
+    static void RemoveItem(Dictionary<string, int> inv, string item)
+    {
+        if (!inv.ContainsKey(item)) return;
+        
+        inv[item]--;
+        if (inv[item] <= 0)
+            inv.Remove(item);
+    }
+
+    static void PrintInventory(Dictionary<string, int> inv)
+    {
+        foreach (var item in inv)
+            Console.WriteLine($"{item.Key}: {item.Value}");
+    }
+
+    static void SearchItem(Dictionary<string, int> inv, string item)
+    {
+        if (inv.TryGetValue(item, out int count))
+            Console.WriteLine($"\nНайдено: {item} ({count} шт.)");
+        else
+            Console.WriteLine($"\nПредмет {item} не найден");
+    }
+}
